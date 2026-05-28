@@ -9,6 +9,7 @@ import { NButton, NTooltip, NSwitch, NModal, NInputNumber, useMessage } from 'na
 import { computed, ref, nextTick, onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useToolTraceVisibility } from '@/composables/useToolTraceVisibility'
+import ModelSelector from '@/components/layout/ModelSelector.vue'
 
 const chatStore = useChatStore()
 const { t } = useI18n()
@@ -491,6 +492,8 @@ function isImage(type: string): boolean {
           :style="{ width: `${usagePercent}%` }"
         />
       </div>
+      <div class="input-top-spacer"></div>
+      <ModelSelector class="chat-model-selector" compact :show-label="false" />
     </div>
 
     <!-- Attachment previews -->
@@ -637,16 +640,28 @@ function isImage(type: string): boolean {
 @use '@/styles/variables' as *;
 
 .chat-input-area {
-  padding: 12px 20px 16px;
-  border-top: 1px solid $border-color;
+  width: min(760px, calc(100% - 48px));
+  margin: 0 auto 18px;
+  padding: 0;
+  border-top: none;
   flex-shrink: 0;
 }
 
 .input-top-bar {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 0 6px;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 8px 6px;
+}
+
+.input-top-spacer {
+  flex: 1 1 auto;
+  min-width: 12px;
+}
+
+.chat-model-selector {
+  margin-left: auto;
 }
 
 .auto-play-speech-switch {
@@ -839,20 +854,22 @@ function isImage(type: string): boolean {
 .input-wrapper {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   background-color: $bg-input;
   border: 1px solid $border-color;
-  border-radius: $radius-md;
+  border-radius: 16px;
   padding: 10px 12px;
   position: relative;
-  transition: border-color $transition-fast, background-color $transition-fast;
+  box-shadow: 0 18px 42px rgba(var(--text-primary-rgb), 0.08);
+  transition: border-color $transition-fast, background-color $transition-fast, box-shadow $transition-fast;
 
   &:focus-within {
-    border-color: $accent-primary;
+    border-color: #c7c7c7;
+    box-shadow: 0 18px 48px rgba(var(--text-primary-rgb), 0.1);
   }
 
   .dark & {
-    background-color: #333333;
+    background-color: $bg-input;
   }
 }
 
@@ -878,8 +895,8 @@ function isImage(type: string): boolean {
   outline: none;
   color: $text-primary;
   font-family: $font-ui;
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 13px;
+  line-height: 1.45;
   resize: none;
   max-height: 400px;
   min-height: 20px;
@@ -895,7 +912,7 @@ function isImage(type: string): boolean {
 
 .input-actions {
   display: flex;
-  gap: 6px;
+  gap: 5px;
   flex-shrink: 0;
   align-items: center;
 }
@@ -909,8 +926,8 @@ function isImage(type: string): boolean {
   overflow-y: auto;
   background: $bg-primary;
   border: 1px solid $border-color;
-  border-radius: $radius-sm;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
+  border-radius: 12px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.14);
   z-index: 20;
   padding: 4px;
 

@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { NSpin } from 'naive-ui'
 import { request } from '@/api/client'
+import { ChevronDown, ChevronRight, Folder, FolderOpen, LoaderCircle } from 'lucide-vue-next'
 
 interface FolderEntry {
   name: string
@@ -132,7 +133,7 @@ const flatNodes = computed<FlatNode[]>(() => {
         :class="{ selected: selectedPath === basePath }"
         @click="selectBase"
       >
-        <span class="folder-icon">📂</span>
+        <FolderOpen class="folder-icon" :size="15" :stroke-width="1.8" aria-hidden="true" />
         <span class="folder-name">{{ basePath || '/' }}</span>
       </div>
 
@@ -145,10 +146,11 @@ const flatNodes = computed<FlatNode[]>(() => {
         :style="{ paddingLeft: `${12 + node.depth * 16}px` }"
       >
         <span class="folder-expand" @click.stop="toggleExpand(node.folder)">
-          <template v-if="node.isLoading">⏳</template>
-          <template v-else>{{ node.isExpanded ? '▼' : '▶' }}</template>
+          <LoaderCircle v-if="node.isLoading" class="folder-loading-icon" :size="12" :stroke-width="1.8" aria-hidden="true" />
+          <ChevronDown v-else-if="node.isExpanded" :size="12" :stroke-width="2" aria-hidden="true" />
+          <ChevronRight v-else :size="12" :stroke-width="2" aria-hidden="true" />
         </span>
-        <span class="folder-icon" @click="selectFolder(node.folder)">📁</span>
+        <Folder class="folder-icon" :size="15" :stroke-width="1.8" aria-hidden="true" @click="selectFolder(node.folder)" />
         <span class="folder-name" @click="selectFolder(node.folder)">{{ node.folder.name }}</span>
       </div>
 
@@ -227,8 +229,10 @@ const flatNodes = computed<FlatNode[]>(() => {
 
 .folder-expand {
   width: 14px;
-  font-size: 10px;
-  text-align: center;
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   user-select: none;
   opacity: 0.6;
@@ -236,6 +240,17 @@ const flatNodes = computed<FlatNode[]>(() => {
 
 .folder-icon {
   flex-shrink: 0;
+  color: var(--accent-primary);
+}
+
+.folder-loading-icon {
+  animation: folder-spin 0.8s linear infinite;
+}
+
+@keyframes folder-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .folder-name {

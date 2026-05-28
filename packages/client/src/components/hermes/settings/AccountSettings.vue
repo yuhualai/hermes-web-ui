@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { NButton, NInput, NModal, NForm, NFormItem, NPopconfirm, useMessage } from "naive-ui";
 import { useI18n } from "vue-i18n";
 import { changePassword, changeUsername, fetchCurrentUser, fetchLockedIps, unlockSpecificIp, unlockAllIps } from "@/api/auth";
 import type { LockedIp } from "@/api/auth";
+import { useAppStore } from "@/stores/hermes/app";
+import ProfileSelector from "@/components/layout/ProfileSelector.vue";
+import LanguageSwitch from "@/components/layout/LanguageSwitch.vue";
+import ThemeSwitch from "@/components/layout/ThemeSwitch.vue";
 
 const { t } = useI18n();
 const message = useMessage();
+const router = useRouter();
+const appStore = useAppStore();
 
 const username = ref<string | null>(null);
 const loading = ref(false);
@@ -125,6 +132,24 @@ function formatTime(ts: number): string {
   return remaining > 0 ? `${remaining} min` : t("common.expired");
 }
 
+async function handleUpdate() {
+  const ok = await appStore.doUpdate();
+  if (ok) {
+    message.success(t("sidebar.updateSuccess"), { duration: 5000 });
+  } else {
+    message.error(t("sidebar.updateFailed"));
+  }
+}
+
+function handleReloadClient() {
+  appStore.reloadClient();
+}
+
+function handleLogout() {
+  localStorage.clear();
+  router.replace({ name: "login" });
+}
+
 onMounted(() => { loadLockedIps(); });
 </script>
 
@@ -139,6 +164,78 @@ onMounted(() => { loadLockedIps(); });
           <NButton @click="openChangePasswordModal">{{ t("login.changePassword") }}</NButton>
           <NButton @click="openChangeUsernameModal">{{ t("login.changeUsername") }}</NButton>
         </div>
+      </div>
+    </div>
+
+    <div class="workspace-section">
+      <h3 class="section-title">{{ t("sidebar.profiles") }}</h3>
+      <div class="setting-card">
+        <ProfileSelector />
+      </div>
+    </div>
+
+    <div class="workspace-section">
+      <h3 class="section-title">{{ t("settings.tabs.display") }}</h3>
+      <div class="setting-card control-grid">
+        <div class="control-row">
+          <div class="control-copy">
+            <span class="control-title">{{ t("sidebar.connected") }}</span>
+            <span class="control-note">
+              {{ appStore.connected ? t("sidebar.connected") : t("sidebar.disconnected") }}
+            </span>
+          </div>
+          <span
+            class="status-pill"
+            :class="{ connected: appStore.connected, disconnected: !appStore.connected }"
+          >
+            <span class="status-dot"></span>
+            {{ appStore.connected ? t("sidebar.connected") : t("sidebar.disconnected") }}
+          </span>
+        </div>
+        <div class="control-row">
+          <div class="control-copy">
+            <span class="control-title">{{ t("language.label") || "Language" }}</span>
+            <span class="control-note">Web UI</span>
+          </div>
+          <LanguageSwitch />
+        </div>
+        <div class="control-row">
+          <div class="control-copy">
+            <span class="control-title">{{ t("settings.display.theme") }}</span>
+            <span class="control-note">{{ t("settings.display.themeHint") }}</span>
+          </div>
+          <ThemeSwitch />
+        </div>
+        <div class="control-row">
+          <div class="control-copy">
+            <span class="control-title">Web UI v{{ appStore.serverVersion || "0.1.0" }}</span>
+            <span class="control-note">Hermes Web UI</span>
+          </div>
+          <div class="version-links">
+            <a href="https://github.com/EKKOLearnAI/hermes-web-ui" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://ekkolearnai.com/" target="_blank" rel="noopener noreferrer">Website</a>
+          </div>
+        </div>
+        <NButton
+          v-if="appStore.clientOutdated"
+          type="warning"
+          block
+          @click="handleReloadClient"
+        >
+          {{ t("sidebar.reloadClientVersion", { version: appStore.serverVersion }) }}
+        </NButton>
+        <NButton
+          v-if="appStore.updateAvailable"
+          type="primary"
+          block
+          :loading="appStore.updating"
+          @click="handleUpdate"
+        >
+          {{ appStore.updating ? t("sidebar.updating") : t("sidebar.updateVersion", { version: appStore.latestVersion }) }}
+        </NButton>
+        <NButton type="error" ghost block @click="handleLogout">
+          {{ t("sidebar.logout") }}
+        </NButton>
       </div>
     </div>
 
@@ -245,11 +342,107 @@ onMounted(() => { loadLockedIps(); });
   border-top: 1px solid $border-color;
 }
 
+.workspace-section {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid $border-color;
+}
+
 .section-title {
   font-size: 15px;
   font-weight: 600;
   color: $text-primary;
   margin: 0 0 16px;
+}
+
+.setting-card {
+  padding: 14px;
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  background: $bg-input;
+}
+
+.control-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 34px;
+}
+
+.control-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.control-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: $text-primary;
+}
+
+.control-note {
+  font-size: 12px;
+  color: $text-muted;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 9px;
+  border: 1px solid $border-color;
+  border-radius: 999px;
+  color: $text-secondary;
+  font-size: 12px;
+  font-weight: 600;
+
+  &.connected {
+    color: $success;
+    border-color: rgba(var(--success-rgb), 0.35);
+    background: rgba(var(--success-rgb), 0.08);
+  }
+
+  &.disconnected {
+    color: $error;
+    border-color: rgba(var(--error-rgb), 0.35);
+    background: rgba(var(--error-rgb), 0.08);
+  }
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.version-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+:deep(.profile-selector) {
+  padding: 0;
+  margin: 0;
+}
+
+:deep(.profile-display) {
+  max-width: 320px;
+}
+
+:deep(.input-sm) {
+  width: 160px;
 }
 
 .locked-list {

@@ -4,6 +4,20 @@ import { useI18n } from 'vue-i18n'
 import { useFilesStore, isImageFile, isMarkdownFile, isTextFile } from '@/stores/hermes/files'
 import { downloadFile } from '@/api/hermes/download'
 import type { FileEntry } from '@/api/hermes/files'
+import {
+  Archive,
+  ClipboardList,
+  Download,
+  File,
+  FileCode2,
+  FileText,
+  Folder,
+  Image,
+  Pencil,
+  ScrollText,
+  Settings,
+  Zap,
+} from 'lucide-vue-next'
 
 const { t } = useI18n()
 const message = useMessage()
@@ -31,18 +45,18 @@ function formatDate(iso: string): string {
   return d.toLocaleString()
 }
 
-function getFileIcon(entry: FileEntry): string {
-  if (entry.isDir) return '📁'
+function getFileIcon(entry: FileEntry) {
+  if (entry.isDir) return Folder
   const ext = entry.name.split('.').pop()?.toLowerCase() || ''
-  const iconMap: Record<string, string> = {
-    yaml: '⚙️', yml: '⚙️', json: '📋', toml: '⚙️',
-    md: '📝', txt: '📄', log: '📄',
-    py: '🐍', js: '📜', ts: '📜', vue: '💚',
-    png: '🖼️', jpg: '🖼️', jpeg: '🖼️', gif: '🖼️', svg: '🖼️', webp: '🖼️',
-    zip: '📦', gz: '📦', tar: '📦',
-    sh: '⚡', bash: '⚡',
+  const iconMap: Record<string, any> = {
+    yaml: Settings, yml: Settings, json: ClipboardList, toml: Settings,
+    md: ScrollText, txt: FileText, log: FileText,
+    py: FileCode2, js: FileCode2, ts: FileCode2, vue: FileCode2,
+    png: Image, jpg: Image, jpeg: Image, gif: Image, svg: Image, webp: Image,
+    zip: Archive, gz: Archive, tar: Archive,
+    sh: Zap, bash: Zap,
   }
-  return iconMap[ext] || '📄'
+  return iconMap[ext] || File
 }
 
 function handleDoubleClick(entry: FileEntry) {
@@ -97,14 +111,18 @@ async function handleDownload(entry: FileEntry) {
           @contextmenu="handleContextMenu($event, entry)"
         >
           <div class="file-name">
-            <span class="file-icon">{{ getFileIcon(entry) }}</span>
+            <component :is="getFileIcon(entry)" class="file-icon" :size="15" :stroke-width="1.7" aria-hidden="true" />
             <span>{{ entry.name }}</span>
           </div>
           <div class="file-size">{{ entry.isDir ? '—' : formatSize(entry.size) }}</div>
           <div class="file-date">{{ formatDate(entry.modTime) }}</div>
           <div class="file-actions">
-            <NButton v-if="isTextFile(entry.name) && !entry.isDir" size="tiny" quaternary @click.stop="filesStore.openEditor(entry.path)" :title="t('files.edit')">✏️</NButton>
-            <NButton v-if="!entry.isDir" size="tiny" quaternary @click.stop="handleDownload(entry)" :title="t('files.download')">⬇️</NButton>
+            <NButton v-if="isTextFile(entry.name) && !entry.isDir" size="tiny" quaternary @click.stop="filesStore.openEditor(entry.path)" :title="t('files.edit')">
+              <template #icon><Pencil :size="13" :stroke-width="1.8" /></template>
+            </NButton>
+            <NButton v-if="!entry.isDir" size="tiny" quaternary @click.stop="handleDownload(entry)" :title="t('files.download')">
+              <template #icon><Download :size="13" :stroke-width="1.8" /></template>
+            </NButton>
           </div>
         </div>
       </div>
@@ -116,14 +134,14 @@ async function handleDownload(entry: FileEntry) {
 @use '@/styles/variables' as *;
 
 .file-list {
-  padding: 8px 16px;
+  padding: 6px 12px;
 }
 
 .file-list-header {
   display: flex;
   align-items: center;
-  padding: 6px 12px;
-  gap: 16px;
+  padding: 5px 10px;
+  gap: 12px;
   font-size: 12px;
   font-weight: 500;
   color: $text-muted;
@@ -153,11 +171,11 @@ async function handleDownload(entry: FileEntry) {
 .file-list-row {
   display: flex;
   align-items: center;
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: $radius-sm;
   cursor: pointer;
-  gap: 16px;
-  font-size: 13px;
+  gap: 12px;
+  font-size: 12px;
 
   &:hover {
     background-color: rgba(var(--accent-primary-rgb), 0.06);

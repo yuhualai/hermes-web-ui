@@ -98,7 +98,7 @@ useKeyboard()
 .app-main {
   flex: 1;
   overflow-y: auto;
-  background-color: $bg-primary;
+  background: $bg-primary;
 
   .no-sidebar & {
     height: calc(100 * var(--vh));

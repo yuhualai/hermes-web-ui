@@ -13,6 +13,7 @@ import HistoryMessageList from '@/components/hermes/chat/HistoryMessageList.vue'
 import SessionListItem from '@/components/hermes/chat/SessionListItem.vue'
 import OutlinePanel from '@/components/hermes/chat/OutlinePanel.vue'
 import { batchDeleteSessions, deleteSession, fetchHermesSessions, fetchHermesSession, importHermesSession, type SessionSummary } from '@/api/hermes/sessions'
+import { Folder as FolderIcon } from 'lucide-vue-next'
 
 const appStore = useAppStore()
 const profilesStore = useProfilesStore()
@@ -731,7 +732,10 @@ function handleBatchDeleteConfirm() {
           </NButton>
           <span class="header-session-title">{{ activeSessionTitle }}</span>
           <span v-if="activeSessionSource" class="source-badge">{{ getSourceLabel(activeSessionSource) }}</span>
-          <span v-if="historySession?.workspace" class="workspace-badge" :title="historySession.workspace">📁 {{ historySession.workspace.split('/').pop() || historySession.workspace }}</span>
+          <span v-if="historySession?.workspace" class="workspace-badge" :title="historySession.workspace">
+            <FolderIcon class="workspace-badge-icon" :size="13" :stroke-width="1.8" aria-hidden="true" />
+            {{ historySession.workspace.split('/').pop() || historySession.workspace }}
+          </span>
         </div>
         <div class="header-actions">
           <NTooltip trigger="hover">
@@ -792,7 +796,7 @@ function handleBatchDeleteConfirm() {
 }
 
 .session-list {
-  width: 220px;
+  width: 206px;
   border-right: 1px solid $border-color;
   display: flex;
   flex-direction: column;
@@ -849,7 +853,7 @@ function handleBatchDeleteConfirm() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px;
+  padding: 8px 10px;
   flex-shrink: 0;
 }
 
@@ -882,8 +886,8 @@ function handleBatchDeleteConfirm() {
 }
 
 .session-scope-note {
-  margin: 0 12px 10px;
-  padding: 8px 10px;
+  margin: 0 10px 8px;
+  padding: 6px 8px;
   border: 1px solid rgba($accent-primary, 0.16);
   border-radius: $radius-sm;
   background: rgba($accent-primary, 0.06);
@@ -896,7 +900,7 @@ function handleBatchDeleteConfirm() {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 6px 10px 4px;
+  padding: 5px 8px 3px;
   cursor: pointer;
   user-select: none;
 }
@@ -932,7 +936,7 @@ function handleBatchDeleteConfirm() {
 .session-items {
   flex: 1;
   overflow-y: auto;
-  padding: 0 6px 12px;
+  padding: 0 5px 8px;
 }
 
 .session-loading,
@@ -948,7 +952,7 @@ function handleBatchDeleteConfirm() {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 8px 10px;
+  padding: 6px 8px;
   border: none;
   background: none;
   border-radius: $radius-sm;
@@ -1077,7 +1081,8 @@ function handleBatchDeleteConfirm() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 21px 20px;
+  min-height: 50px;
+  padding: 10px 14px;
   border-bottom: 1px solid $border-color;
   flex-shrink: 0;
 }
@@ -1092,7 +1097,7 @@ function handleBatchDeleteConfirm() {
 }
 
 .header-session-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: $text-primary;
   white-space: nowrap;
@@ -1125,6 +1130,9 @@ function handleBatchDeleteConfirm() {
 }
 
 .workspace-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 11px;
   color: $text-muted;
   background: rgba(255, 255, 255, 0.05);
@@ -1135,5 +1143,10 @@ function handleBatchDeleteConfirm() {
   text-overflow: ellipsis;
   white-space: nowrap;
   cursor: default;
+}
+
+.workspace-badge-icon {
+  flex-shrink: 0;
+  color: $accent-primary;
 }
 </style>

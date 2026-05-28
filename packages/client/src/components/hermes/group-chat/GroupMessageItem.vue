@@ -16,6 +16,7 @@ import { useVoiceSettings } from '@/composables/useVoiceSettings'
 import { speedToEdgeRate, hzToEdgePitch } from '@/utils/ttsHelpers'
 import { getDownloadUrl } from '@/api/hermes/download'
 import type { ChatMessage, RoomAgent } from '@/api/hermes/group-chat'
+import { Brain } from 'lucide-vue-next'
 
 const TOOL_PAYLOAD_DISPLAY_LIMIT = 1000
 const JSON_STRING_DISPLAY_LIMIT = 200
@@ -485,7 +486,7 @@ onBeforeUnmount(() => {
                         >
                             <polyline points="9 18 15 12 9 6" />
                         </svg>
-                        <span class="thinking-icon">💭</span>
+                        <Brain class="thinking-icon" :size="13" :stroke-width="1.8" aria-hidden="true" />
                         <span class="thinking-label">
                             {{ thinkingStreamingNow ? t('chat.thinkingInProgress') : t('chat.thinkingLabel') }}
                         </span>
@@ -536,7 +537,7 @@ onBeforeUnmount(() => {
 
 .group-message {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     padding: 2px 0;
     min-width: 0;
     max-width: 100%;
@@ -850,9 +851,9 @@ onBeforeUnmount(() => {
 }
 
 .msg-content {
-    padding: 10px 14px;
-    font-size: 14px;
-    line-height: 1.65;
+    padding: 7px 10px;
+    font-size: 13px;
+    line-height: 1.55;
     color: $text-primary;
     border-radius: 10px;
     background-color: $msg-user-bg;
@@ -991,8 +992,8 @@ onBeforeUnmount(() => {
     }
 
     .thinking-icon {
-        font-size: 11px;
         flex-shrink: 0;
+        color: $accent-primary;
     }
 
     .thinking-label {

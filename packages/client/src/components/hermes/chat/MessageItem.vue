@@ -19,6 +19,7 @@ import {
 import { useGlobalSpeech } from "@/composables/useSpeech";
 import { useVoiceSettings } from "@/composables/useVoiceSettings";
 import { speedToEdgeRate, hzToEdgePitch } from "@/utils/ttsHelpers";
+import { Brain } from "lucide-vue-next";
 
 const TOOL_PAYLOAD_DISPLAY_LIMIT = 1000;
 const JSON_STRING_DISPLAY_LIMIT = 200;
@@ -852,7 +853,7 @@ onBeforeUnmount(() => {
                 >
                   <polyline points="9 18 15 12 9 6" />
                 </svg>
-                <span class="thinking-icon">💭</span>
+                <Brain class="thinking-icon" :size="13" :stroke-width="1.8" aria-hidden="true" />
                 <span class="thinking-label">
                   {{
                     thinkingStreamingNow
@@ -1000,13 +1001,15 @@ onBeforeUnmount(() => {
   flex-direction: column;
   position: relative;
   min-width: 0;
+  width: min(760px, 100%);
   max-width: 100%;
+  margin: 0 auto;
 
   &.user {
     align-items: flex-end;
 
     .msg-body {
-      max-width: 75%;
+      max-width: min(72%, 620px);
       position: relative;
       z-index: 1;
     }
@@ -1017,7 +1020,7 @@ onBeforeUnmount(() => {
 
     .message-bubble {
       background-color: $msg-user-bg;
-      border-radius: 10px;
+      border-radius: 16px;
     }
   }
 
@@ -1027,21 +1030,21 @@ onBeforeUnmount(() => {
     gap: 8px;
 
     .msg-body {
-      max-width: 80%;
+      max-width: calc(100% - 40px);
       position: relative;
       z-index: 1;
     }
 
     .msg-avatar {
-      width: 40px;
-      height: 40px;
+      width: 32px;
+      height: 32px;
       flex-shrink: 0;
       margin-top: 2px;
     }
 
     .message-bubble {
       background-color: $msg-assistant-bg;
-      border-radius: 10px;
+      border-radius: 0;
     }
 
     .message-bubble.agent-error {
@@ -1085,7 +1088,7 @@ onBeforeUnmount(() => {
 .msg-body {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
+  gap: 6px;
   max-width: 85%;
 }
 
@@ -1096,11 +1099,11 @@ onBeforeUnmount(() => {
 }
 
 .message-bubble {
-  padding: 10px 14px;
-  font-size: 14px;
-  line-height: 1.65;
+  padding: 7px 10px;
+  font-size: 13px;
+  line-height: 1.55;
   word-break: break-word;
-  border-radius: 10px;
+  border-radius: 12px;
   max-width: 100%;
   position: relative;
   box-sizing: border-box;
@@ -1114,8 +1117,8 @@ onBeforeUnmount(() => {
 
   &.command {
     border-left: none;
-    border: 1px solid rgba(var(--accent-primary-rgb), 0.12);
-    background-color: rgba(var(--accent-primary-rgb), 0.04);
+    border: 1px solid $border-color;
+    background-color: $bg-secondary;
     color: $text-secondary;
     max-width: min(100%, 960px);
     padding: 8px 10px;
@@ -1184,9 +1187,9 @@ onBeforeUnmount(() => {
   gap: 4px;
   flex: 0 0 auto;
   padding: 2px 7px;
-  border: 1px solid rgba(var(--accent-primary-rgb), 0.1);
+  border: 1px solid $border-light;
   border-radius: 999px;
-  background: rgba(var(--accent-primary-rgb), 0.035);
+  background: $bg-secondary;
   line-height: 1.4;
 }
 
@@ -1209,7 +1212,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: rgba(var(--accent-primary-rgb), 0.1);
+  background: $bg-secondary;
   color: $accent-primary;
   font-family: $font-code;
   font-size: 12px;
@@ -1341,8 +1344,8 @@ onBeforeUnmount(() => {
   }
 
   .thinking-icon {
-    font-size: 11px;
     flex-shrink: 0;
+    color: $accent-primary;
   }
 
   .thinking-label {
@@ -1370,8 +1373,8 @@ onBeforeUnmount(() => {
 .message-meta {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 4px;
+  gap: 4px;
+  margin-top: 2px;
   padding: 0 4px;
   opacity: 0;
   transition: opacity 0.15s ease;
@@ -1391,8 +1394,8 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border: none;
   background: transparent;
   color: $text-muted;

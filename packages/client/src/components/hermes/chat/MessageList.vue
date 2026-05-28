@@ -373,15 +373,15 @@ watch(currentToolCalls, () => {
 .message-list {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 28px 28px 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  background-color: $bg-card;
+  gap: 14px;
+  background-color: $bg-primary;
   position: relative;
 
   .dark & {
-    background-color: #333333;
+    background-color: $bg-primary;
   }
 }
 
@@ -593,12 +593,12 @@ watch(currentToolCalls, () => {
   align-items: center;
   justify-content: center;
   color: $text-muted;
-  gap: 12px;
+  gap: 10px;
 
   .empty-logo {
-    width: 48px;
-    height: 48px;
-    opacity: 0.25;
+    width: 38px;
+    height: 38px;
+    opacity: 0.2;
   }
 
   p {
@@ -618,11 +618,11 @@ watch(currentToolCalls, () => {
 .streaming-indicator {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 4px;
+  gap: 8px;
+  padding: 2px;
   .thinking-video {
-    width: 120px;
-    height: 213px;
+    width: 84px;
+    height: 150px;
     border-radius: $radius-md;
     object-fit: contain;
     flex-shrink: 0;

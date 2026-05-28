@@ -120,6 +120,28 @@ const textPreviewIsMarkdown = computed(() => /\.(md|markdown)$/i.test(textPrevie
 let renderGeneration = 0
 let unmounted = false
 
+function lucideInlineIcon(paths: string, className = ''): string {
+  return `<svg class="markdown-lucide-icon ${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`
+}
+
+const emojiIconMap: Record<string, string> = {
+  '📊': lucideInlineIcon('<path d="M3 3v18h18" /><rect x="7" y="12" width="3" height="5" /><rect x="12" y="8" width="3" height="9" /><rect x="17" y="5" width="3" height="12" />', 'markdown-lucide-chart'),
+  '📈': lucideInlineIcon('<path d="M3 3v18h18" /><path d="m7 14 4-4 3 3 5-6" /><path d="M14 7h5v5" />', 'markdown-lucide-chart'),
+  '🎯': lucideInlineIcon('<circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="5" /><circle cx="12" cy="12" r="1" />', 'markdown-lucide-target'),
+  '✅': lucideInlineIcon('<path d="M20 6 9 17l-5-5" />', 'markdown-lucide-success'),
+  '❌': lucideInlineIcon('<path d="M18 6 6 18" /><path d="m6 6 12 12" />', 'markdown-lucide-danger'),
+  '⚠️': lucideInlineIcon('<path d="m21.7 18-8-14a2 2 0 0 0-3.4 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" />', 'markdown-lucide-warning'),
+  '💡': lucideInlineIcon('<path d="M15 14c.2-1 .7-1.7 1.5-2.6A6 6 0 1 0 7.5 11.4C8.3 12.3 8.8 13 9 14" /><path d="M9 18h6" /><path d="M10 22h4" />', 'markdown-lucide-info'),
+  '📌': lucideInlineIcon('<path d="M12 17v5" /><path d="M9 10.8V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v5.8l3 3.2v2H6v-2l3-3.2Z" />', 'markdown-lucide-pin'),
+  '📁': lucideInlineIcon('<path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9L9.6 4A2 2 0 0 0 7.9 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />', 'markdown-lucide-file'),
+  '📄': lucideInlineIcon('<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" /><path d="M14 2v6h6" />', 'markdown-lucide-file'),
+  '⭐': lucideInlineIcon('<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21 7 14.2l-5-4.9 6.9-1Z" />', 'markdown-lucide-star'),
+}
+
+function replaceMarkdownEmoji(html: string): string {
+  return html.replace(/📊|📈|🎯|✅|❌|⚠️|💡|📌|📁|📄|⭐/g, match => emojiIconMap[match] || match)
+}
+
 function isLocalFilePath(path: string): boolean {
   return path.startsWith('/') || /^[a-zA-Z]:[\\/]/.test(path)
 }
@@ -206,7 +228,7 @@ const renderedHtml = computed(() => {
     const re = new RegExp(`(?<=[\\s>({\\[<]|^)@(${escaped.join('|')})(?=[\\s.,!?;:，。！？；：)\\]}>]|<|$)`, 'gi')
     html = html.replace(re, '<span class="mention-highlight">@$1</span>')
   }
-  return html
+  return replaceMarkdownEmoji(html)
 })
 
 function renderMermaidFallback(element: HTMLElement, source: string): void {
@@ -495,15 +517,15 @@ function closeTextPreview(): void {
 @use '@/styles/variables' as *;
 
 .markdown-body {
-  font-size: 14px;
-  line-height: 1.65;
+  font-size: 13px;
+  line-height: 1.55;
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
   overflow-x: auto;
 
   p {
-    margin: 0 0 8px;
+    margin: 0 0 6px;
 
     &:last-child {
       margin-bottom: 0;
@@ -511,12 +533,27 @@ function closeTextPreview(): void {
   }
 
   ul, ol {
-    padding-left: 20px;
-    margin: 4px 0 8px;
+    padding-left: 18px;
+    margin: 3px 0 6px;
   }
 
   li {
-    margin: 2px 0;
+    margin: 1px 0;
+  }
+
+  .markdown-lucide-icon {
+    width: 1.05em;
+    height: 1.05em;
+    display: inline-block;
+    vertical-align: -0.16em;
+    margin-right: 0.28em;
+    color: $accent-primary;
+    flex: 0 0 auto;
+  }
+
+  .markdown-lucide-star {
+    margin-right: 0.08em;
+    color: #d99a1e;
   }
 
   strong {
@@ -652,15 +689,15 @@ function closeTextPreview(): void {
   table {
     width: 100%;
     border-collapse: collapse;
-    margin: 8px 0;
+    margin: 6px 0;
     display: block;
     overflow-x: auto;
 
     th, td {
-      padding: 6px 12px;
+      padding: 5px 9px;
       border: 1px solid $border-color;
       text-align: left;
-      font-size: 13px;
+      font-size: 12px;
     }
 
     th {
@@ -677,7 +714,7 @@ function closeTextPreview(): void {
   hr {
     border: none;
     border-top: 1px solid $border-color;
-    margin: 12px 0;
+    margin: 8px 0;
   }
 
   .mermaid-diagram {

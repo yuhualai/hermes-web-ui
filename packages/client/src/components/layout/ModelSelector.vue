@@ -8,6 +8,13 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const appStore = useAppStore()
 const profilesStore = useProfilesStore()
+const props = withDefaults(defineProps<{
+  compact?: boolean
+  showLabel?: boolean
+}>(), {
+  compact: false,
+  showLabel: true,
+})
 
 const showModal = ref(false)
 const searchQuery = ref('')
@@ -121,8 +128,8 @@ function openModal() {
 </script>
 
 <template>
-  <div class="model-selector">
-    <div class="model-label">{{ t('models.title') }}</div>
+  <div class="model-selector" :class="{ compact: props.compact }">
+    <div v-if="props.showLabel" class="model-label">{{ t('models.title') }}</div>
     <button class="model-trigger" @click="openModal">
       <span class="model-name" :title="appStore.selectedModel">{{ selectedDisplayName || '—' }}</span>
       <svg class="model-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -228,6 +235,20 @@ function openModal() {
 .model-selector {
   padding: 0 12px;
   margin-bottom: 8px;
+
+  &.compact {
+    width: min(210px, 32vw);
+    min-width: 150px;
+    padding: 0;
+    margin: 0;
+  }
+
+  &.compact .model-trigger {
+    height: 26px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 11px;
+  }
 }
 
 .model-label {
@@ -254,7 +275,7 @@ function openModal() {
   transition: border-color $transition-fast;
 
   &:hover {
-    border-color: $accent-muted;
+    border-color: #c7c7c7;
   }
 }
 

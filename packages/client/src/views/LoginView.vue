@@ -60,41 +60,57 @@ async function handlePasswordLogin() {
 
 <template>
   <div class="login-view">
-    <div class="login-card">
-      <div class="login-logo">
-        <img src="/logo.png" alt="Hermes" width="80" height="80" />
-      </div>
-      <h1 class="login-title">{{ t("login.title") }}</h1>
-      <p class="login-desc">{{ t("login.description") }}</p>
-      <p class="login-default-hint">{{ t("login.defaultCredentialsHint") }}</p>
-
-      <form class="login-form" @submit.prevent="handleLogin">
-        <input
-          v-model="username"
-          type="text"
-          class="login-input"
-          :placeholder="t('login.usernamePlaceholder')"
-          autofocus
-        />
-        <input
-          v-model="password"
-          type="password"
-          class="login-input"
-          :placeholder="t('login.passwordPlaceholder')"
-          @keyup.enter="handleLogin"
-        />
-
-        <div v-if="errorMsg" class="login-error">{{ errorMsg }}</div>
-        <div v-if="showLockResetHint" class="login-lock-hint">
-          <span>{{ t("login.lockResetHint") }}</span>
-          <code>hermes-web-ui clear-login-locks --restart</code>
-          <span>{{ t("login.defaultLoginResetHint") }}</span>
-          <code>hermes-web-ui reset-default-login</code>
+    <div class="login-shell">
+      <section class="login-brand-panel" aria-hidden="true">
+        <div class="brand-logo-wrap">
+          <img src="/logo.png" alt="" width="72" height="72" />
         </div>
-        <button type="submit" class="login-btn" :disabled="loading">
-          {{ loading ? "..." : t("login.submit") }}
-        </button>
-      </form>
+        <div class="brand-rhythm">
+          <span class="rhythm-line rhythm-line-primary"></span>
+          <span class="rhythm-line"></span>
+          <span class="rhythm-line rhythm-line-short"></span>
+        </div>
+        <div class="brand-grid">
+          <span v-for="cell in 18" :key="cell"></span>
+        </div>
+      </section>
+
+      <div class="login-card">
+        <div class="login-logo">
+          <img src="/logo.png" alt="Hermes" width="56" height="56" />
+        </div>
+        <h1 class="login-title">{{ t("login.title") }}</h1>
+        <p class="login-desc">{{ t("login.description") }}</p>
+        <p class="login-default-hint">{{ t("login.defaultCredentialsHint") }}</p>
+
+        <form class="login-form" @submit.prevent="handleLogin">
+          <input
+            v-model="username"
+            type="text"
+            class="login-input"
+            :placeholder="t('login.usernamePlaceholder')"
+            autofocus
+          />
+          <input
+            v-model="password"
+            type="password"
+            class="login-input"
+            :placeholder="t('login.passwordPlaceholder')"
+            @keyup.enter="handleLogin"
+          />
+
+          <div v-if="errorMsg" class="login-error">{{ errorMsg }}</div>
+          <div v-if="showLockResetHint" class="login-lock-hint">
+            <span>{{ t("login.lockResetHint") }}</span>
+            <code>hermes-web-ui clear-login-locks --restart</code>
+            <span>{{ t("login.defaultLoginResetHint") }}</span>
+            <code>hermes-web-ui reset-default-login</code>
+          </div>
+          <button type="submit" class="login-btn" :disabled="loading">
+            {{ loading ? "..." : t("login.submit") }}
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 </template>
@@ -104,20 +120,93 @@ async function handlePasswordLogin() {
 
 .login-view {
   height: calc(100 * var(--vh));
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  background:
+    linear-gradient(135deg, rgba(var(--accent-primary-rgb), 0.08), transparent 32%),
+    linear-gradient(180deg, $bg-primary, $bg-secondary);
+}
+
+.login-shell {
+  width: min(980px, 100%);
+  min-height: 560px;
+  display: grid;
+  grid-template-columns: minmax(320px, 0.92fr) minmax(360px, 1fr);
+  overflow: hidden;
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  background: $bg-card;
+  box-shadow: 0 24px 70px rgba(var(--text-primary-rgb), 0.12);
+}
+
+.login-brand-panel {
+  position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: $bg-primary;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px;
+  overflow: hidden;
+  background:
+    linear-gradient(145deg, rgba(var(--accent-primary-rgb), 0.14), transparent 55%),
+    $bg-secondary;
+  border-right: 1px solid $border-color;
+}
+
+.brand-logo-wrap {
+  width: 92px;
+  height: 92px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: 0 16px 36px rgba(var(--text-primary-rgb), 0.08);
+}
+
+.brand-rhythm {
+  display: grid;
+  gap: 14px;
+  width: min(280px, 100%);
+}
+
+.rhythm-line {
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(var(--text-muted-rgb), 0.2);
+}
+
+.rhythm-line-primary {
+  width: 72%;
+  background: rgba(var(--accent-primary-rgb), 0.55);
+}
+
+.rhythm-line-short {
+  width: 48%;
+}
+
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  max-width: 270px;
+
+  span {
+    aspect-ratio: 1;
+    border: 1px solid rgba(var(--accent-primary-rgb), 0.18);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.42);
+  }
 }
 
 .login-card {
-  width: 480px;
-  max-width: calc(100vw - 32px);
+  width: 100%;
+  max-width: 520px;
+  align-self: center;
+  justify-self: center;
   padding: 56px;
-  border: 1px solid $border-color;
-  border-radius: $radius-lg;
   background: $bg-card;
-  text-align: center;
+  text-align: left;
 
   @media (max-width: $breakpoint-mobile) {
     padding: 32px 24px;
@@ -125,19 +214,21 @@ async function handlePasswordLogin() {
 }
 
 .login-logo {
+  display: none;
   margin-bottom: 24px;
 }
 
 .login-title {
-  font-size: 26px;
-  font-weight: 600;
+  font-size: 28px;
+  font-weight: 700;
   color: $text-primary;
-  margin: 0 0 10px;
+  margin: 0 0 12px;
+  line-height: 1.2;
 }
 
 .login-desc {
   font-size: 14px;
-  color: $text-muted;
+  color: $text-secondary;
   margin: 0 0 12px;
   line-height: 1.6;
 }
@@ -152,21 +243,22 @@ async function handlePasswordLogin() {
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .login-input {
   width: 100%;
-  padding: 14px 16px;
+  height: 46px;
+  padding: 0 15px;
   border: 1px solid $border-color;
-  border-radius: $radius-sm;
+  border-radius: 8px;
   font-size: 15px;
   color: $text-primary;
   background: $bg-input;
   outline: none;
-  transition: border-color $transition-fast;
+  transition: border-color $transition-fast, box-shadow $transition-fast;
   box-sizing: border-box;
-  font-family: $font-code;
+  font-family: $font-ui;
 
   &::placeholder {
     color: $text-muted;
@@ -174,6 +266,7 @@ async function handlePasswordLogin() {
 
   &:focus {
     border-color: $accent-primary;
+    box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.12);
   }
 }
 
@@ -186,7 +279,7 @@ async function handlePasswordLogin() {
 .login-lock-hint {
   padding: 10px 12px;
   border: 1px solid rgba(var(--warning-rgb), 0.35);
-  border-radius: $radius-sm;
+  border-radius: 8px;
   background: rgba(var(--warning-rgb), 0.08);
   color: $text-secondary;
   font-size: 12px;
@@ -204,23 +297,48 @@ async function handlePasswordLogin() {
 
 .login-btn {
   width: 100%;
-  padding: 14px;
+  height: 46px;
   border: none;
-  border-radius: $radius-sm;
-  background: $text-primary;
+  border-radius: 8px;
+  background: $accent-primary;
   color: var(--text-on-accent);
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
-  transition: opacity $transition-fast;
+  transition: background-color $transition-fast, transform $transition-fast, opacity $transition-fast;
 
   &:hover {
-    opacity: 0.85;
+    background: $accent-hover;
+    transform: translateY(-1px);
   }
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+}
+
+@media (max-width: 860px) {
+  .login-view {
+    padding: 16px;
+  }
+
+  .login-shell {
+    min-height: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .login-brand-panel {
+    display: none;
+  }
+
+  .login-card {
+    max-width: none;
+    text-align: center;
+  }
+
+  .login-logo {
+    display: block;
   }
 }
 </style>

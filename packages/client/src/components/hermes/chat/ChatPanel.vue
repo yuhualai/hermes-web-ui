@@ -26,6 +26,7 @@ import MessageList from "./MessageList.vue";
 import SessionListItem from "./SessionListItem.vue";
 import DrawerPanel from "./DrawerPanel.vue";
 import OutlinePanel from "./OutlinePanel.vue";
+import { Folder as FolderIcon } from "lucide-vue-next";
 
 const chatStore = useChatStore();
 const appStore = useAppStore();
@@ -1117,12 +1118,13 @@ async function handleSessionModelCustomSubmit() {
             v-if="chatStore.activeSession?.workspace"
             class="workspace-badge"
             :title="chatStore.activeSession.workspace"
-            >📁
+          >
+            <FolderIcon class="workspace-badge-icon" :size="13" :stroke-width="1.8" aria-hidden="true" />
             {{
               chatStore.activeSession.workspace.split("/").pop() ||
               chatStore.activeSession.workspace
-            }}</span
-          >
+            }}
+          </span>
         </div>
         <div class="header-actions">
           <!-- chat/live mode toggle hidden -->
@@ -1541,8 +1543,9 @@ async function handleSessionModelCustomSubmit() {
 }
 
 .session-list {
-  width: 220px;
-  border-right: 1px solid $border-color;
+  width: 212px;
+  border-right: 1px solid $border-light;
+  background: $bg-sidebar;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -1600,7 +1603,7 @@ async function handleSessionModelCustomSubmit() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px;
+  padding: 7px 8px;
   flex-shrink: 0;
   min-height: 0;
 }
@@ -1639,7 +1642,7 @@ async function handleSessionModelCustomSubmit() {
 }
 
 .session-list-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: $text-muted;
   text-transform: uppercase;
@@ -1648,7 +1651,7 @@ async function handleSessionModelCustomSubmit() {
 }
 
 .session-profile-filter {
-  margin: 0 8px 10px;
+  margin: 0 8px 8px;
 }
 
 .new-chat-form {
@@ -1679,7 +1682,7 @@ async function handleSessionModelCustomSubmit() {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 6px 10px 4px;
+  padding: 5px 8px 3px;
   cursor: pointer;
   user-select: none;
 }
@@ -1715,7 +1718,7 @@ async function handleSessionModelCustomSubmit() {
 .session-items {
   flex: 1;
   overflow-y: auto;
-  padding: 0 6px 12px;
+  padding: 0 5px 8px;
 }
 
 .session-loading,
@@ -1731,7 +1734,7 @@ async function handleSessionModelCustomSubmit() {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 8px 10px;
+  padding: 6px 8px;
   border: none;
   background: none;
   border-radius: $radius-sm;
@@ -1743,7 +1746,7 @@ async function handleSessionModelCustomSubmit() {
   margin-bottom: 2px;
 
   &:hover {
-    background: rgba($accent-primary, 0.06);
+    background: rgba(var(--text-primary-rgb), 0.05);
     color: $text-primary;
 
     .session-item-delete {
@@ -1752,13 +1755,13 @@ async function handleSessionModelCustomSubmit() {
   }
 
   &.active {
-    background: rgba(var(--accent-primary-rgb), 0.12);
+    background: rgba(var(--text-primary-rgb), 0.08);
     color: $text-primary;
     font-weight: 500;
   }
 
   &.active .session-item-title {
-    color: $accent-primary;
+    color: $text-primary;
   }
 
   &.missing-models {
@@ -1844,8 +1847,8 @@ async function handleSessionModelCustomSubmit() {
 
 :deep(.session-item-model) {
   font-size: 10px;
-  color: $accent-primary;
-  background: rgba($accent-primary, 0.08);
+  color: $text-muted;
+  background: rgba(var(--text-primary-rgb), 0.05);
   padding: 0 5px;
   border-radius: 3px;
   line-height: 16px;
@@ -1900,8 +1903,9 @@ async function handleSessionModelCustomSubmit() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 21px 20px;
-  border-bottom: 1px solid $border-color;
+  min-height: 48px;
+  padding: 10px 16px;
+  border-bottom: 1px solid transparent;
   flex-shrink: 0;
 }
 
@@ -1915,7 +1919,7 @@ async function handleSessionModelCustomSubmit() {
 }
 
 .header-session-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: $text-primary;
   white-space: nowrap;
@@ -1955,6 +1959,9 @@ async function handleSessionModelCustomSubmit() {
 }
 
 .workspace-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 11px;
   color: $text-muted;
   background: rgba(255, 255, 255, 0.05);
@@ -1967,35 +1974,35 @@ async function handleSessionModelCustomSubmit() {
   cursor: default;
 }
 
+.workspace-badge-icon {
+  flex-shrink: 0;
+  color: $accent-primary;
+}
+
 // ─── Drawer button ─────────────────────────────────────────────
 
 .drawer-button-wrapper {
   position: absolute;
-  right: 16px;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 100;
   background: $bg-card;
   border-radius: 50%;
-  box-shadow:
-    0 0 10px rgba(255, 107, 107, 0.4),
-    0 0 20px rgba(255, 107, 107, 0.2);
-  animation: rainbow-glow 8s linear infinite;
+  box-shadow: 0 8px 24px rgba(var(--text-primary-rgb), 0.1);
   transition: all $transition-fast;
 
   &:hover {
-    animation-play-state: paused;
-    box-shadow:
-      0 0 15px rgba(255, 107, 107, 0.6),
-      0 0 30px rgba(255, 107, 107, 0.3);
+    box-shadow: 0 10px 30px rgba(var(--text-primary-rgb), 0.16);
   }
 }
 
 .drawer-button {
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  background: rgba(var(--accent-primary-rgb), 0.1);
+  background: $bg-card;
+  border: 1px solid $border-color;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2009,7 +2016,7 @@ async function handleSessionModelCustomSubmit() {
   }
 
   &:hover {
-    transform: scale(1.1);
+    transform: translateY(-1px);
   }
 }
 
